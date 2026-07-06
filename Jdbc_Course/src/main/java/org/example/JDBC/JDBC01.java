@@ -5,7 +5,8 @@ public class JDBC01 {
 //        StateInsert();
 //        UpdateStatement();
 //        retriveDate();
-        deleteData();
+//        deleteData();
+        CRUD_Operation();
     }
 
     public static void StateInsert() throws SQLException {
@@ -135,6 +136,46 @@ public class JDBC01 {
         }finally {
             statement.close();
             connection.close();
+        }
+    }
+
+    public static void CRUD_Operation() throws SQLException{
+        Connection connect=null;
+
+        try{
+            Class.forName("org.postgresql.Driver");
+
+            String url = "jdbc:postgresql://localhost:5432/postgres";
+            String user="postgres";
+            String password="Test@123";
+
+            connect=DriverManager.getConnection(url,user,password);
+            Statement statement=connect.createStatement();
+
+            String sql="select * from studentinfo";
+            boolean result=statement.execute(sql);
+
+            if(result){
+                ResultSet resultSet=statement.getResultSet();
+
+                while (resultSet.next()){
+                    int id=resultSet.getInt(1);
+
+                    if(id%2==0){
+                        int updated=statement.executeUpdate("update studentinfo set name='anisha smith' where id=2");
+
+                        if(updated==0){
+                            System.out.println("failed updating");
+                        }else{
+                            System.out.println("updatated success");
+                        }
+                    }
+                }
+            }else{
+                System.out.println("empty");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 }
